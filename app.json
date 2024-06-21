@@ -2,6 +2,12 @@
   "expo": {
     "name": "qrhunt",
     "slug": "qrhunt",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "ios": {
+      "bundleIdentifier": "com.qrhunt.qrhunt"
+    },
+    "android": {
+      "package": "com.qrhunt.qrhunt"
+    }
   }
 }

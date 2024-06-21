@@ -35,13 +35,13 @@ const Cadastro = () => {
 
     const handleSignup = async () => {
         setError(null);
-        
-        if (user.length < 3) {
+
+        if (user.length < 5) {
             setError('O usuário deve ter pelo menos 3 caracteres.');
             return;
         }
 
-        if (password.length < 5) {
+        if (password.length < 4) {
             setError('A senha deve ter pelo menos 5 caracteres.');
             return;
         }
