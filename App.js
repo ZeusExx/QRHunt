@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from './Telas/Login/login';
 import Cadastro from './Telas/Cadastro/cadastro';
 import Inicio from './Telas/Inicio/inicio';
+import Senha from './Telas/Senha/Senha';
 
 const Stack = createStackNavigator();
 
@@ -19,13 +20,18 @@ const App = () => {
         <Stack.Screen
           name="Cadastro"
           component={Cadastro}
-          options={{ headerShown: false }} // Oculta o cabeçalho da tela de Cadastro
+          options={{ headerShown: false }} 
         />
         <Stack.Screen
           name="Inicio"
           component={Inicio}
-          options={{ headerShown: false }} // Oculta o cabeçalho da tela de Início
+          options={{ headerShown: false }}
         />
+        <Stack.Screen
+        name="Senha"
+        component={Senha}
+        options={{ headerShown: false }} 
+      />
       </Stack.Navigator>
     </NavigationContainer>
   );

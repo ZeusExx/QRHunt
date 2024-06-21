@@ -134,6 +134,12 @@ const Login = () => {
                     >
                         <Text style={styles.registerLinkText}>Não tem uma conta? Cadastre-se</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.registerLink}
+                        onPress={() => navigation.navigate('Senha')}
+                    >
+                        <Text style={styles.registerLinkText}>Esqueceu a senha?</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </KeyboardAvoidingView>
