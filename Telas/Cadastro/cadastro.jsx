@@ -1,25 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, KeyboardAvoidingView, Platform, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../../Firebase/config';
 import { createUserWithEmailAndPassword } from "firebase/auth";
+
+const { width, height } = Dimensions.get('window');
+
+// Importe os ícones para mostrar/ocultar a senha
+import Mostra from '../../imgs/OnIcon.png';
+import Esconda from '../../imgs/OffIcon.png';
 
 const Cadastro = () => {
     const [user, setUser] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
+    const [showPassword, setShowPassword] = useState(false); // Estado para controlar a visibilidade da senha
     const navigation = useNavigation();
 
     useEffect(() => {
         if (error) {
             const timer = setTimeout(() => {
                 setError(null);
-            }, 3000); // Clear the error after 3 seconds
+            }, 3000);
 
-            return () => clearTimeout(timer); // Cleanup the timer on component unmount
+            return () => clearTimeout(timer);
         }
     }, [error]);
+
+    // Função para alternar a visibilidade da senha
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const handleSignup = async () => {
         setError(null);
@@ -40,9 +52,9 @@ const Cadastro = () => {
             setUser('');
             setEmail('');
             setPassword('');
-            navigation.navigate('Inicio'); // Redirecionar para a tela de início após o cadastro
+            navigation.navigate('Inicio');
         } catch (err) {
-            console.error('Erro durante o cadastro:', err); // Exibir o erro completo no console
+            console.error('Erro durante o cadastro:', err);
             let errorMessage = 'Erro ao cadastrar. Verifique suas informações e tente novamente.';
             if (err.code === 'auth/weak-password') {
                 errorMessage = 'A senha deve ter pelo menos 6 caracteres.';
@@ -63,48 +75,81 @@ const Cadastro = () => {
             <View style={styles.logoContainer}>
                 <Text style={styles.logo}>QRHUNT</Text>
                 <Image
-                    source={require('../../imgs/qrhunt.png')} // Substitua o caminho pelo seu arquivo de imagem
+                    source={require('../../imgs/qrhunt.png')}
                     style={styles.logoImage}
                     resizeMode="contain"
                 />
             </View>
             <Text style={styles.title}>Cadastro</Text>
             {error && <Text style={styles.error}>{error}</Text>}
-            <Text style={styles.inputLabel}>Usuário</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Crie um usuário"
-                placeholderTextColor="#555555"
-                value={user}
-                onChangeText={setUser}
-                autoCapitalize="none"
-                autoCorrect={false}
-                textAlign="center"
-                maxLength={30} // Define um limite razoável para o comprimento máximo do usuário
-            />
-            <Text style={styles.inputLabel}>Email</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Coloque seu email"
-                placeholderTextColor="#555555"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                textAlign="center"
-            />
-            <Text style={styles.inputLabel}>Senha</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Crie uma senha"
-                placeholderTextColor="#555555"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                textAlign="center"
-                maxLength={30} // Define um limite razoável para o comprimento máximo da senha
-            />
+            <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Usuário</Text>
+                <View style={styles.inputWithIcon}>
+                    <Image
+                        source={require('../../imgs/user.png')}
+                        style={styles.inputIcon}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Crie um usuário"
+                        placeholderTextColor="#555555"
+                        value={user}
+                        onChangeText={setUser}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        maxLength={30}
+                        textAlign="center" // Centraliza o texto horizontalmente
+                    />
+                </View>
+            </View>
+            <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Email</Text>
+                <View style={styles.inputWithIcon}>
+                    <Image
+                        source={require('../../imgs/email.png')}
+                        style={styles.inputIcon}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Coloque seu email"
+                        placeholderTextColor="#555555"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        textAlign="center" // Centraliza o texto horizontalmente
+                    />
+                </View>
+            </View>
+            <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Senha</Text>
+                <View style={styles.inputWithIcon}>
+                    <Image
+                        source={require('../../imgs/cadeado.png')}
+                        style={styles.inputIcon}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Crie uma senha"
+                        placeholderTextColor="#555555"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!showPassword} // Mostra texto simples ou oculta conforme estado
+                        maxLength={30}
+                        textAlign="center" // Centraliza o texto horizontalmente
+                    />
+                    <TouchableOpacity
+                        style={styles.visibilityIcon}
+                        onPress={togglePasswordVisibility}
+                    >
+                        <Image
+                            source={showPassword ? Mostra : Esconda} // Mostra o ícone correspondente ao estado de showPassword
+                            style={styles.visibilityIconImage}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </View>
             <TouchableOpacity style={styles.loginButton} onPress={handleSignup}>
                 <Text style={styles.loginButtonText}>Cadastrar</Text>
             </TouchableOpacity>
@@ -118,71 +163,97 @@ const Cadastro = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#5cb85c', // Background verde
+        backgroundColor: '#5cb85c',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 16,
     },
     logoContainer: {
         alignItems: 'center',
-        marginBottom: 10, // Ajuste a margem inferior para reduzir o espaço
+        marginBottom: height * 0.02,
     },
     logo: {
-        fontSize: 28, // Diminuir tamanho da fonte do logo
+        fontSize: height * 0.035,
         fontWeight: 'bold',
     },
     logoImage: {
-        width: 150, // Reduzir o tamanho da imagem do logo
-        height: 150,
-        marginTop: 10,
+        width: width * 0.4,
+        height: height * 0.2,
+        marginTop: height * 0.02,
     },
     title: {
-        fontSize: 28, // Diminuir o tamanho da fonte do título
+        fontSize: height * 0.035,
         fontWeight: 'bold',
-        marginBottom: 15, // Reduzir a margem inferior do título
+        marginBottom: height * 0.02,
+    },
+    inputContainer: {
+        marginBottom: height * 0.015,
+        width: '90%',
+        maxWidth: 400,
     },
     inputLabel: {
-        marginBottom: 2, // Reduzir a margem inferior do rótulo
+        marginBottom: height * 0.005,
         color: 'black',
-        fontSize: 16, // Diminuir tamanho da fonte do rótulo
+        fontSize: height * 0.02,
         textAlign: 'center',
     },
-    input: {
-        height: 40,
-        width: '90%', // Usar porcentagem para largura do input
-        backgroundColor: '#ffffff',
-        borderWidth: 1,
+    inputWithIcon: {
+        flexDirection: 'row',
+        alignItems: 'center',
         borderColor: 'black',
-        borderRadius: 10, // Diminuir o raio da borda
-        paddingHorizontal: 8,
-        marginBottom: 10,
-        fontSize: 14, // Diminuir o tamanho da fonte do input
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: width * 0.02,
+        backgroundColor: '#ffffff',
+        height: height * 0.06,
+    },
+    input: {
+        flex: 1,
+        fontSize: height * 0.02,
+        padding: height * 0.01,
+    },
+    inputIcon: {
+        width: width * 0.05,
+        height: width * 0.05,
+        tintColor: '#555555',
+        marginRight: width * 0.02,
+    },
+    visibilityIcon: {
+        position: 'absolute',
+        right: 10,
+        height: '100%',
+        justifyContent: 'center',
+    },
+    visibilityIconImage: {
+        width: width * 0.06,
+        height: width * 0.06,
+        tintColor: '#555555',
     },
     loginButton: {
         backgroundColor: '#000000',
-        paddingVertical: 10,
+        paddingVertical: height * 0.015,
         borderRadius: 10,
         alignItems: 'center',
-        marginTop: 8, // Reduzir a margem superior do botão
-        width: '90%', // Usar porcentagem para largura do botão
+        marginTop: height * 0.01,
+        width: '90%',
     },
     loginButtonText: {
-        fontSize: 16,
+        fontSize: height * 0.025,
         color: '#ffffff',
         fontWeight: 'bold',
     },
     registerLink: {
-        marginTop: 8, // Reduzir a margem superior do link de registro
+        marginTop: height * 0.01,
         alignItems: 'center',
     },
     registerLinkText: {
-        fontSize: 14, // Diminuir o tamanho da fonte do link de registro
+        fontSize: height * 0.02,
         color: '#000000',
         textDecorationLine: 'underline',
     },
     error: {
         color: 'red',
-        marginBottom: 10, // Reduzir a margem inferior da mensagem de erro
+        marginBottom: height * 0.02,
         textAlign: 'center',
     },
 });
