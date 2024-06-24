@@ -3,6 +3,7 @@
     "name": "qrhunt",
     "slug": "qrhunt",
     "version": "1.0.0",
+    "scheme": "qrhunt",
     "ios": {
       "bundleIdentifier": "com.qrhunt.qrhunt"
     },
