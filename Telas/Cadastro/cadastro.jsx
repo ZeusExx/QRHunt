@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, KeyboardAvoidingView, Platform, Image, Dimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, KeyboardAvoidingView, Platform, Image, Dimensions, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../../Firebase/config';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const { width, height } = Dimensions.get('window');
 
-// Importe os ícones para mostrar/ocultar a senha
+// Importe os ícones para mostrar/ocultar a senha e a seta de voltar
 import Mostra from '../../imgs/OnIcon.png';
 import Esconda from '../../imgs/OffIcon.png';
+import Voltar from '../../imgs/back.png'; // Adicione o ícone da seta de voltar
 
 const Cadastro = () => {
     const [user, setUser] = useState('');
@@ -71,91 +72,100 @@ const Cadastro = () => {
         <KeyboardAvoidingView
             style={styles.container}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20} // Ajuste a offset conforme necessário
         >
-            <View style={styles.logoContainer}>
-                <Text style={styles.logo}>QRHUNT</Text>
-                <Image
-                    source={require('../../imgs/qrhunt.png')}
-                    style={styles.logoImage}
-                    resizeMode="contain"
-                />
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                    <Image source={Voltar} style={styles.backIcon} />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Cadastro</Text>
+                <View style={styles.backIconPlaceholder} />
             </View>
-            <Text style={styles.title}>Cadastro</Text>
-            {error && <Text style={styles.error}>{error}</Text>}
-            <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Usuário</Text>
-                <View style={styles.inputWithIcon}>
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                <View style={styles.logoContainer}>
+                    <Text style={styles.logo}>QRHUNT</Text>
                     <Image
-                        source={require('../../imgs/user.png')}
-                        style={styles.inputIcon}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Crie um usuário"
-                        placeholderTextColor="#555555"
-                        value={user}
-                        onChangeText={setUser}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        maxLength={30}
-                        textAlign="center" // Centraliza o texto horizontalmente
+                        source={require('../../imgs/qrhunt.png')}
+                        style={styles.logoImage}
+                        resizeMode="contain"
                     />
                 </View>
-            </View>
-            <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Email</Text>
-                <View style={styles.inputWithIcon}>
-                    <Image
-                        source={require('../../imgs/email.png')}
-                        style={styles.inputIcon}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Coloque seu email"
-                        placeholderTextColor="#555555"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        textAlign="center" // Centraliza o texto horizontalmente
-                    />
-                </View>
-            </View>
-            <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Senha</Text>
-                <View style={styles.inputWithIcon}>
-                    <Image
-                        source={require('../../imgs/cadeado.png')}
-                        style={styles.inputIcon}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Crie uma senha"
-                        placeholderTextColor="#555555"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={!showPassword} // Mostra texto simples ou oculta conforme estado
-                        maxLength={30}
-                        textAlign="center" // Centraliza o texto horizontalmente
-                    />
-                    <TouchableOpacity
-                        style={styles.visibilityIcon}
-                        onPress={togglePasswordVisibility}
-                    >
+                {error && <Text style={styles.error}>{error}</Text>}
+                <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Usuário</Text>
+                    <View style={styles.inputWithIcon}>
                         <Image
-                            source={showPassword ? Mostra : Esconda} // Mostra o ícone correspondente ao estado de showPassword
-                            style={styles.visibilityIconImage}
+                            source={require('../../imgs/user.png')}
+                            style={styles.inputIcon}
                         />
-                    </TouchableOpacity>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Crie um usuário"
+                            placeholderTextColor="#555555"
+                            value={user}
+                            onChangeText={setUser}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            maxLength={30}
+                            textAlign="center" // Centraliza o texto horizontalmente
+                        />
+                    </View>
                 </View>
-            </View>
-            <TouchableOpacity style={styles.loginButton} onPress={handleSignup}>
-                <Text style={styles.loginButtonText}>Cadastrar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.registerLink} onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.registerLinkText}>Já tem uma conta? Faça Login</Text>
-            </TouchableOpacity>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Email</Text>
+                    <View style={styles.inputWithIcon}>
+                        <Image
+                            source={require('../../imgs/email.png')}
+                            style={styles.inputIcon}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Coloque seu email"
+                            placeholderTextColor="#555555"
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            textAlign="center" // Centraliza o texto horizontalmente
+                        />
+                    </View>
+                </View>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.inputLabel}>Senha</Text>
+                    <View style={styles.inputWithIcon}>
+                        <Image
+                            source={require('../../imgs/cadeado.png')}
+                            style={styles.inputIcon}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Crie uma senha"
+                            placeholderTextColor="#555555"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={!showPassword} // Mostra texto simples ou oculta conforme estado
+                            maxLength={30}
+                            textAlign="center" // Centraliza o texto horizontalmente
+                        />
+                        <TouchableOpacity
+                            style={styles.visibilityIcon}
+                            onPress={togglePasswordVisibility}
+                        >
+                            <Image
+                                source={showPassword ? Mostra : Esconda} // Mostra o ícone correspondente ao estado de showPassword
+                                style={styles.visibilityIconImage}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <TouchableOpacity style={styles.loginButton} onPress={handleSignup}>
+                    <Text style={styles.loginButtonText}>Cadastrar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.registerLink} onPress={() => navigation.navigate('Login')}>
+                    <Text style={styles.registerLinkText}>Já tem uma conta? Faça Login</Text>
+                </TouchableOpacity>
+            </ScrollView>
         </KeyboardAvoidingView>
     );
 };
@@ -164,13 +174,38 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#5cb85c',
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        padding: 16,
+        backgroundColor: '#5cb85c',
+    },
+    backIcon: {
+        width: 20,
+        height: 20,
+        tintColor: '#ffffff',
+    },
+    backIconPlaceholder: {
+        width: 20, // Define o mesmo tamanho que backIcon para consistência
+        height: 20,
+    },
+    headerTitle: {
+        fontSize: height * 0.035,
+        fontWeight: 'bold',
+        color: '#ffffff',
+    },
+    scrollViewContent: {
+        flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 16,
+        paddingVertical: 20,
     },
     logoContainer: {
         alignItems: 'center',
-        marginBottom: height * 0.02,
+        marginBottom: 20,
     },
     logo: {
         fontSize: height * 0.035,
@@ -181,18 +216,13 @@ const styles = StyleSheet.create({
         height: height * 0.2,
         marginTop: height * 0.02,
     },
-    title: {
-        fontSize: height * 0.035,
-        fontWeight: 'bold',
-        marginBottom: height * 0.02,
-    },
     inputContainer: {
-        marginBottom: height * 0.015,
+        marginBottom: height * 0.02,
         width: '90%',
         maxWidth: 400,
     },
     inputLabel: {
-        marginBottom: height * 0.005,
+        marginBottom: height * 0.01,
         color: 'black',
         fontSize: height * 0.02,
         textAlign: 'center',
@@ -203,7 +233,7 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
         borderRadius: 10,
-        paddingHorizontal: width * 0.02,
+        paddingHorizontal: 10,
         backgroundColor: '#ffffff',
         height: height * 0.06,
     },
@@ -213,10 +243,10 @@ const styles = StyleSheet.create({
         padding: height * 0.01,
     },
     inputIcon: {
-        width: width * 0.05,
-        height: width * 0.05,
+        width: 24,
+        height: 24,
         tintColor: '#555555',
-        marginRight: width * 0.02,
+        marginRight: 10,
     },
     visibilityIcon: {
         position: 'absolute',
@@ -225,8 +255,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     visibilityIconImage: {
-        width: width * 0.06,
-        height: width * 0.06,
+        width: 24,
+        height: 24,
         tintColor: '#555555',
     },
     loginButton: {
