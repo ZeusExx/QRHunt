@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     },
     visibilityIcon: {
         position: 'absolute',
-        right: 10,
+        right: 10, 
         height: '100%',
         justifyContent: 'center',
     },
